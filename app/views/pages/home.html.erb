@@ -1,39 +1,56 @@
 <div class="container mt-5">
-  <h1>Bienvenido a Writter</h1>
-  <p>Comparte tus ideas mediante esta poderosa plataforma.</p>
+  <h1 class="text-center mb-5">Bienvenido a Writter</h1>
+  <p class="text-center">Comparte tus ideas mediante esta poderosa plataforma.</p>
 
   <!-- Formulario para crear un nuevo post -->
-  <%= form_with(model: Post.new, url: posts_path, local: true) do |form| %>
-    <div class="form-group">
-      <%= form.label :content, "Escribe tu publicación:" %>
-      <%= form.text_area :content, class: "form-control", rows: 3 %>
-    </div>
-    <%= form.submit "Publicar", class: "btn btn-primary mt-2" %>
-  <% end %>
+  <div class="mb-5">
+    <h3>Crea tu Publicación</h3>
+    <%= form_with(model: Post.new, url: posts_path, local: true) do |form| %>
+      <div class="form-group">
+        <%= form.label :content, "Escribe tu publicación:" %>
+        <%= form.text_area :content, class: "form-control", rows: 3 %>
+      </div>
+      <%= form.submit "Publicar", class: "btn btn-primary mt-2" %>
+    <% end %>
+  </div>
 
   <!-- Mostrar posts recientes -->
-  <h2 class="mt-5">Posts Recientes</h2>
-  <% @posts.each do |post| %>
-    <div class="post mb-3">
-      <p><%= link_to post.content, post_path(post) %></p>
-      <small>Publicado por <%= link_to post.user.name || post.user.email, profile_path(post.user) %> el <%= post.created_at.strftime("%d %B %Y") %></small>
-    </div>
-  <% end %>
-
-  <h3 class="mt-5">Hashtags Más Populares de Hoy</h3>
-  <ul>
-    <% Post.most_used_hashtags.each do |tag, count| %>
-      <li><%= link_to "##{tag} (#{count})", search_posts_path(tag: tag) %></li>
+  <div class="mb-5">
+    <h3>Posts Recientes</h3>
+    <% @posts.each do |post| %>
+      <div class="post mb-3 p-3 border rounded">
+        <h4><%= link_to post.content.truncate(100), post_path(post) %></h4>
+        <small class="text-muted">Publicado por <%= link_to post.user.email, user_path(post.user) %> el <%= post.created_at.strftime("%d %B %Y") %></small>
+      </div>
     <% end %>
-  </ul>
+  </div>
+
+  <!-- Sección para mostrar los hashtags más utilizados del día -->
+  <div class="mb-5">
+    <h3 class="mt-5">Hashtags más utilizados hoy</h3>
+    <div class="list-group">
+      <% if @most_used_hashtags.present? %>
+        <% @most_used_hashtags.each do |hashtag, count| %>
+          <a href="<%= search_posts_path(tag: hashtag) %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            #<%= hashtag %>
+            <span class="badge bg-primary rounded-pill"><%= count %> posts</span>
+          </a>
+        <% end %>
+      <% else %>
+        <p>No se encontraron hashtags populares hoy.</p>
+      <% end %>
+    </div>
+  </div>
 
   <!-- Formulario para buscar por hashtags -->
-  <h3 class="mt-5">Buscar por Hashtags</h3>
-  <%= form_with(url: search_posts_path, method: :get, local: true) do %>
-    <div class="form-group">
-      <%= label_tag :tag, "Ingresa un hashtag:" %>
-      <%= text_field_tag :tag, nil, class: "form-control" %>
-    </div>
-    <%= submit_tag "Buscar", class: "btn btn-secondary mt-2" %>
-  <% end %>
+  <div class="mb-5">
+    <h3 class="mt-5">Buscar por Hashtags</h3>
+    <%= form_with(url: search_posts_path, method: :get, local: true) do %>
+      <div class="form-group">
+        <%= label_tag :tag, "Ingresa un hashtag:" %>
+        <%= text_field_tag :tag, nil, class: "form-control" %>
+      </div>
+      <%= submit_tag "Buscar", class: "btn btn-secondary mt-2" %>
+    <% end %>
+  </div>
 </div>
