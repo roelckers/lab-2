@@ -1,4 +1,39 @@
 <div class="container mt-5">
   <h1>Bienvenido a Writter</h1>
-  <p>Comparte tus ideas extremistas mediante esta poderosa plataforma.</p>
+  <p>Comparte tus ideas mediante esta poderosa plataforma.</p>
+
+  <!-- Formulario para crear un nuevo post -->
+  <%= form_with(model: Post.new, url: posts_path, local: true) do |form| %>
+    <div class="form-group">
+      <%= form.label :content, "Escribe tu publicación:" %>
+      <%= form.text_area :content, class: "form-control", rows: 3 %>
+    </div>
+    <%= form.submit "Publicar", class: "btn btn-primary mt-2" %>
+  <% end %>
+
+  <!-- Mostrar posts recientes -->
+  <h2 class="mt-5">Posts Recientes</h2>
+  <% @posts.each do |post| %>
+    <div class="post mb-3">
+      <p><%= link_to post.content, post_path(post) %></p>
+      <small>Publicado por <%= link_to post.user.name || post.user.email, profile_path(post.user) %> el <%= post.created_at.strftime("%d %B %Y") %></small>
+    </div>
+  <% end %>
+
+  <h3 class="mt-5">Hashtags Más Populares de Hoy</h3>
+  <ul>
+    <% Post.most_used_hashtags.each do |tag, count| %>
+      <li><%= link_to "##{tag} (#{count})", search_posts_path(tag: tag) %></li>
+    <% end %>
+  </ul>
+
+  <!-- Formulario para buscar por hashtags -->
+  <h3 class="mt-5">Buscar por Hashtags</h3>
+  <%= form_with(url: search_posts_path, method: :get, local: true) do %>
+    <div class="form-group">
+      <%= label_tag :tag, "Ingresa un hashtag:" %>
+      <%= text_field_tag :tag, nil, class: "form-control" %>
+    </div>
+    <%= submit_tag "Buscar", class: "btn btn-secondary mt-2" %>
+  <% end %>
 </div>

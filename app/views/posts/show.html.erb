@@ -1,0 +1,29 @@
+<div class="container mt-5">
+  <h1><%= @post.content.truncate(100) %></h1>
+  <p>Publicado por: <%= link_to @post.user.name, user_path(@post.user) %> el <%= @post.created_at.strftime("%d %B %Y") %></p>
+
+  <h2>Comentarios</h2>
+  <%= form_with(model: [ @post, Comment.new ], local: true) do |form| %>
+    <div class="form-group">
+      <%= form.label :content, "Agregar un comentario" %>
+      <%= form.text_area :content, class: "form-control", rows: 3 %>
+    </div>
+    <%= form.submit "Agregar Comentario", class: "btn btn-primary mt-2" %>
+  <% end %>
+
+  <ul class="list-unstyled mt-3">
+    <% @post.comments.each do |comment| %>
+      <li>
+        <p><%= comment.content %></p>
+        <small>Comentado por <%= link_to comment.user.name, user_path(comment.user) %> el <%= comment.created_at.strftime("%d %B %Y") %></small>
+      </li>
+      <hr>
+    <% end %>
+  </ul>
+
+  <h2>Likes</h2>
+  <%= form_with(model: [ @post, @post.likes.build ], local: true) do |form| %>
+    <%= form.submit "Like", class: "btn btn-outline-primary" %>
+  <% end %>
+  <p><%= @post.likes.count %> Likes</p>
+</div>

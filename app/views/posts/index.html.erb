@@ -1,0 +1,4 @@
+<h1>All Posts</h1>
+<% @posts.each do |post| %>
+  <p><%= link_to post.content.truncate(100), post_path(post) %></p>
+<% end %>
