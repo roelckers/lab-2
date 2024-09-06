@@ -20,7 +20,15 @@
     <% @post.comments.each do |comment| %>
       <li>
         <p><%= comment.content %></p>
-        <small>Comentado por <%= link_to comment.user.name, user_path(comment.user) if comment.user %> el <%= comment.created_at.strftime("%d %B %Y") %></small>
+        <small>
+          Comentado por 
+          <% if comment.user.present? %>
+            <%= link_to comment.user.name, user_path(comment.user) %>
+          <% else %>
+            Usuario desconocido
+          <% end %>
+          el <%= comment.created_at.strftime("%d %B %Y") %>
+        </small>
       </li>
       <hr>
     <% end %>
