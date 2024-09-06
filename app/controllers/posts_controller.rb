@@ -29,4 +29,6 @@ class PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:content)
   end
+
+  before_action :authenticate_user!, only: [:create]
 end

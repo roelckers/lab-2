@@ -1,4 +1,16 @@
-<h1><%= @user.name %>'s Profile</h1>
+<h1><%= @user.first_name.present? && @user.last_name.present? ? "#{@user.first_name} #{@user.last_name}'s Profile" : "#{@user.username}'s Profile" %></h1>
 <p>Email: <%= @user.email %></p>
 <p><img src="<%= @user.profile_image %>" alt="Profile Image"></p>
-<p><%= link_to 'Edit Profile', edit_user_path(@user) %></p>
+<% if current_user == @user %>
+  <p><%= link_to 'Edit Profile', edit_user_path(@user) %></p>
+<% end %>
+
+<h2>Publicaciones de <%= @user.first_name || @user.username %></h2>
+
+<% @user.posts.each do |post| %>
+  <div class="post mb-3 p-3 border rounded">
+    <h3><%= link_to post.title, post_path(post) %></h3>
+    <p><%= truncate(post.content, length: 100) %></p>
+    <small>Publicado el <%= post.created_at.strftime("%d %B %Y") %></small>
+  </div>
+<% end %>

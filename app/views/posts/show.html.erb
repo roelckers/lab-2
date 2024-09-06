@@ -1,6 +1,11 @@
 <div class="container mt-5">
   <h1><%= @post.content.truncate(100) %></h1>
-  <p>Publicado por: <%= link_to @post.user.name, user_path(@post.user) %> el <%= @post.created_at.strftime("%d %B %Y") %></p>
+  <p>Publicado por: <%= link_to @post.user.name, user_path(@post.user) if @post.user %> el <%= @post.created_at.strftime("%d %B %Y") %></p>
+
+  <%= auto_link(@post.content.html_safe) %>
+  <% if @post.image.attached? %>
+    <%= image_tag @post.image, class: "img-fluid" %>
+  <% end %>
 
   <h2>Comentarios</h2>
   <%= form_with(model: [ @post, Comment.new ], local: true) do |form| %>
@@ -15,7 +20,7 @@
     <% @post.comments.each do |comment| %>
       <li>
         <p><%= comment.content %></p>
-        <small>Comentado por <%= link_to comment.user.name, user_path(comment.user) %> el <%= comment.created_at.strftime("%d %B %Y") %></small>
+        <small>Comentado por <%= link_to comment.user.name, user_path(comment.user) if comment.user %> el <%= comment.created_at.strftime("%d %B %Y") %></small>
       </li>
       <hr>
     <% end %>
